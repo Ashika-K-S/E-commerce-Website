@@ -6,7 +6,9 @@ function Register(){
         {
             name:"",
             email:"",
-            password:""
+            password:"",
+            cart:[],
+            wishlist:[]
         }
     )
     const navigate = useNavigate();

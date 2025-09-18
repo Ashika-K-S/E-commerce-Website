@@ -1,10 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const Home = () => {
   return (
+    <>
+    <Navbar/>
     <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
+     
       <section className="bg-black text-yellow-400 py-20 text-center">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-wide">
           Welcome to LOREEZ Jewellery
@@ -17,15 +21,16 @@ const Home = () => {
             Shop Now
           </button>
         </Link>
+
       </section>
 
-      {/* Featured Collections */}
+     
       <section className="py-16 container mx-auto text-center">
         <h2 className="text-3xl font-bold text-yellow-700 mb-10 tracking-wide">
           Featured Collections
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-8">
-          {/* Necklaces */}
+         
           <Link to="/products?category=Necklaces">
             <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-2xl transition cursor-pointer">
               <img
@@ -37,7 +42,7 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* Rings */}
+          
           <Link to="/products?category=Rings">
             <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-2xl transition cursor-pointer">
               <img
@@ -49,7 +54,7 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* Earrings */}
+        
           <Link to="/products?category=Earrings">
             <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-2xl transition cursor-pointer">
               <img
@@ -61,7 +66,7 @@ const Home = () => {
             </div>
           </Link>
 
-          {/* Bangles */}
+          
           <Link to="/products?category=Bangles">
             <div className="bg-white shadow-lg rounded-lg p-4 hover:shadow-2xl transition cursor-pointer">
               <img
@@ -75,7 +80,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Best Sellers */}
+     
       <section className="py-16 bg-gray-100 text-center">
         <h2 className="text-3xl font-bold text-yellow-700 mb-10 tracking-wide">
           Best Sellers
@@ -104,6 +109,8 @@ const Home = () => {
         </div>
       </section>
     </div>
+    <Footer/>
+    </>
   );
 };
 

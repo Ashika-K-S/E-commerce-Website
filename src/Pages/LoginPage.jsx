@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthProvider, useAuth } from "../Context/AuthContext";
+import { useAuth } from "../Context/AuthContext";
+
 function Login() {
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-  });
+  const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const {Login}=useAuth
+  const { login, user } = useAuth(); // ✅ fixed
 
   const stateChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -17,16 +15,23 @@ function Login() {
   const formsubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(data.email)
+      console.log(data.password)
       const result = await axios.get(
         `http://localhost:5000/users?email=${data.email}&password=${data.password}`
       );
+      console.log(result.data)
 
       if (result.data.length > 0) {
-        const user = result.data[0];
-        localStorage.setItem("user", JSON.stringify({id:user.id}));
+        const userData = result.data[0];
+
+        // ✅ Update AuthContext (this also saves in localStorage)
+        login(userData);
+
         alert("Login successful");
 
-        if (user.role === "admin") {
+        // Redirect based on role
+        if (userData.role === "admin") {
           navigate("/admin");
         } else {
           navigate("/");
@@ -40,26 +45,43 @@ function Login() {
     }
   };
 
+  if (user) {
+    // Optional: if already logged in, show a logout button
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-8 rounded-xl shadow-md text-center">
+          <h2 className="text-2xl font-bold mb-4">
+            You are already logged in
+          </h2>
+          <p className="mb-4">Hello, {user.name}!</p>
+          <button
+            onClick={() => {
+              login(null); // logout
+              navigate("/login");
+            }}
+            className="bg-red-500 text-white px-6 py-2 rounded-xl font-semibold hover:bg-red-600 transition-colors"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
-      
       <div className="w-full max-w-md p-12 bg-white shadow-2xl rounded-3xl border border-gray-200">
-        
         <div className="text-center mb-8">
           <h1 className="text-5xl font-serif font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B]">
             LOREEZ
           </h1>
-
-          
           <div className="mx-auto my-2 w-16 h-1 bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B] rounded-full shadow-[0_0_10px_rgba(212,175,55,0.6)]"></div>
-
           <p className="text-sm text-gray-500 mt-2">jewellery</p>
         </div>
 
-        
         <form onSubmit={formsubmit} className="w-full space-y-6">
           <input
-          required
+            required
             type="email"
             name="email"
             placeholder="Email"
@@ -68,7 +90,7 @@ function Login() {
             className="w-full p-4 rounded-xl border border-gray-300 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-md transition duration-300"
           />
           <input
-          required
+            required
             type="password"
             name="password"
             placeholder="Password"
@@ -77,7 +99,6 @@ function Login() {
             className="w-full p-4 rounded-xl border border-gray-300 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-md transition duration-300"
           />
 
-          
           <button
             type="submit"
             className="relative w-full bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B] font-semibold py-4 rounded-xl shadow-lg text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl"
@@ -88,7 +109,6 @@ function Login() {
           </button>
         </form>
 
-        
         <p className="text-gray-600 text-center mt-6">
           Don't have an account?{" "}
           <span

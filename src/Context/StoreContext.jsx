@@ -1,194 +1,166 @@
 import axios from "axios";
-import React, { createContext, useContext, useState,useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
 
 const StoreContext = createContext();
 
 export const StoreProvider = ({ children }) => {
+  const { user } = useAuth(); 
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
 
-  const userData = localStorage.getItem("user");
-  const user = JSON.parse(userData);
-  useEffect(()=>{
-    const fetchUserData=async()=>{
-      if(user){
-      try{
-        const result=await axios.get(`http://localhost:5000/users/${user.id}`)
-        console.log(result.data.cart);
-        setCart(result.data.cart || [])
-        setWishlist(result.data.wishlist || [])
-      }catch(error){
-        console.log("Error fetching data",error)
-      }
-    }
-  };
-  fetchUserData()
-},[])
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const res = await axios.get(`http://localhost:5000/users/${user.id}`);
+          setCart(res.data.cart || []);
+          setWishlist(res.data.wishlist || []);
+        } catch (err) {
+          console.log("Error fetching user data:", err);
+        }
+      } else {
+       
+        setCart([]);
+        setWishlist([]);
+      }
+    };
+    fetchUserData();
+  }, [user]);
+
+  
   const addToCart = async (product) => {
     if (!user) {
       alert("Login First");
       return;
     }
+
     try {
-      if (user) {
-        const userResponse = await axios.get(
-          `http://localhost:5000/users/${user.id}`
+      const exists = cart.find((p) => p.id === product.id);
+      let updatedCart;
+
+      if (exists) {
+        updatedCart = cart.map((p) =>
+          p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
         );
-        const userData = userResponse.data;
-        console.log(userData);
-        const cart = [
-          ...userData.cart,
-          {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            category: product.category,
-            quantity: 1,
-          },
-        ];
-        localStorage.setItem("cart",JSON.stringify(cart))
-
-         const userUpdated = { ...userData, cart }
-         const cartUpdated= await axios.put(`http://localhost:5000/users/${user.id}`, userUpdated)
-         if(cartUpdated){
-          alert("Item Added To Cart")
-         }
-
-        setCart((prev) => {
-          const exists = prev.find((p) => p.id === product.id);
-          if (exists) {
-            return prev.map((p) =>
-              p.id === product.id ? { ...p, quantity: p.quantity + 1 } : p
-            );
-          } else {
-            return [...prev, { ...product, quantity: 1 }];
-            
-          }
-        });
+      } else {
+        updatedCart = [...cart, { ...product, quantity: 1 }];
       }
-    } catch (e) {
-      console.log(e);
+
+      
+      await axios.put(`http://localhost:5000/users/${user.id}`, {
+        ...user,
+        cart: updatedCart,
+        wishlist, 
+      });
+
+      
+      setCart(updatedCart);
+    } catch (err) {
+      console.log("Error adding to cart:", err);
     }
   };
 
   const removeFromCart = async (id) => {
-  try {
+    if (!user) return;
+
     const updatedCart = cart.filter((item) => item.id !== id);
-    setCart(updatedCart); 
 
-    if (user) {
+    try {
       await axios.put(`http://localhost:5000/users/${user.id}`, {
+        ...user,
         cart: updatedCart,
+        wishlist,
       });
+      setCart(updatedCart);
+    } catch (err) {
+      console.log("Error removing from cart:", err);
     }
-
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // optional fallback
-  } catch (err) {
-    console.log("Error removing from cart:", err);
-  }
-};
-
-
-  const updateQuantity = (id, quantity) => {
-    if (quantity < 1) return;
-    setCart((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
   };
- 
-const addToWishlist = async (product) => {
-  if (!user) {
-    alert("Login First");
-    return;
-  }
 
-  try {
-    
-    const { data: userData } = await axios.get(
-      `http://localhost:5000/users/${user.id}`
+  const updateQuantity = async (id, quantity) => {
+    if (!user) return;
+    if (quantity < 1) return;
+
+    const updatedCart = cart.map((item) =>
+      item.id === id ? { ...item, quantity } : item
     );
 
-  
-    const currentWishlist = userData.wishlist || [];
+    try {
+      await axios.put(`http://localhost:5000/users/${user.id}`, {
+        ...user,
+        cart: updatedCart,
+        wishlist,
+      });
+      setCart(updatedCart);
+    } catch (err) {
+      console.log("Error updating quantity:", err);
+    }
+  };
 
-    
-    const exists = currentWishlist.find((p) => p.id === product.id);
+  const toggleWishlist = async (product) => {
+    if (!user) {
+      alert("Login First");
+      return;
+    }
 
     let updatedWishlist;
+    const exists = wishlist.find((p) => p.id === product.id);
+
     if (exists) {
-      
-      updatedWishlist = currentWishlist.filter((p) => p.id !== product.id);
+      updatedWishlist = wishlist.filter((p) => p.id !== product.id);
     } else {
-  
-      updatedWishlist = [...currentWishlist, product];
+      updatedWishlist = [...wishlist, product];
     }
 
-    
-    await axios.put(`http://localhost:5000/users/${user.id}`, {
-      ...userData,
-      wishlist: updatedWishlist,
-    });
+    try {
+      await axios.put(`http://localhost:5000/users/${user.id}`, {
+        ...user,
+        cart, 
+        wishlist: updatedWishlist,
+      });
+      setWishlist(updatedWishlist);
+      alert(exists ? "Removed from Wishlist" : "Added to Wishlist");
+    } catch (err) {
+      console.log("Error updating wishlist:", err);
+    }
+  };
 
-    
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  const removeFromWishlist = async (id) => {
+    if (!user) return;
 
-    alert(exists ? "Removed from Wishlist" : "Added to Wishlist");
-  } catch (e) {
-    console.log("Error updating wishlist", e);
-  }
-};
+    const updatedWishlist = wishlist.filter((item) => item.id !== id);
 
-
-const removeFromWishlist = async (id) => {
-  if (!user) {
-    alert("Login First");
-    return;
-  }
-
-  try {
-    const { data: userData } = await axios.get(
-      `http://localhost:5000/users/${user.id}`
-    );
-
-    const updatedWishlist = (userData.wishlist || []).filter(
-      (item) => item.id !== id
-    );
-
-    
-    await axios.put(`http://localhost:5000/users/${user.id}`, {
-      ...userData,
-      wishlist: updatedWishlist,
-    });
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-  } catch (e) {
-    console.log("Error removing from wishlist", e);
-  }
-};
-
-
-
+    try {
+      await axios.put(`http://localhost:5000/users/${user.id}`, {
+        ...user,
+        cart,
+        wishlist: updatedWishlist,
+      });
+      setWishlist(updatedWishlist);
+    } catch (err) {
+      console.log("Error removing from wishlist:", err);
+    }
+  };
 
   return (
     <StoreContext.Provider
       value={{
         cart,
+        wishlist,
+        setCart,
+        setWishlist,
         addToCart,
         removeFromCart,
         updateQuantity,
-        wishlist,
-        addToWishlist,
+        toggleWishlist,
         removeFromWishlist,
-        user
-        
       }}
     >
       {children}
     </StoreContext.Provider>
   );
 };
+
 export const useStore = () => useContext(StoreContext);

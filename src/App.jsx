@@ -15,9 +15,8 @@ function App()
 { 
    const currentUserId = 3 
    return ( 
+      <AuthProvider>
    <StoreProvider userId={currentUserId}> 
-   <AuthProvider>
-   <div> 
       
       <Routes> 
             <Route path="/" element={<Home/>}/> 
@@ -30,8 +29,8 @@ function App()
             <Route path="/productcart" element={<ProductCard />} /> 
             </Routes> 
           
-            </div> 
-            </AuthProvider>
+           
             </StoreProvider> 
+             </AuthProvider>
             )} 
             export default App

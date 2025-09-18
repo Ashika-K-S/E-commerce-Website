@@ -1,36 +1,47 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HeartIcon, ShoppingCartIcon, UserIcon, HomeIcon } from "@heroicons/react/24/outline";
+import {
+  HeartIcon,
+  ShoppingCartIcon,
+  UserIcon,
+  HomeIcon,
+} from "@heroicons/react/24/outline";
 import { useStore } from "../Context/StoreContext";
-import { useAuth } from "../Context/AuthContext"; 
+import { useAuth } from "../Context/AuthContext";
 
 export default function Navbar() {
   const { cart, wishlist } = useStore();
-  const { user, logout } = useAuth(); 
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const navigateClick = () => navigate("/");
 
+  
+  const handleLogoClick = () => navigate("/");
+
+  
   const handleLogout = () => {
     logout();
-    navigate("/login"); 
   };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md shadow-md border-b border-yellow-500">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+        
+      
         <div className="flex items-center space-x-6">
           <h1
-            onClick={navigateClick}
+            onClick={handleLogoClick}
             className="text-2xl font-bold text-yellow-600 cursor-pointer"
           >
             LOREEZ
           </h1>
+
           <Link
             to="/"
             className="text-yellow-600 hover:text-yellow-800 flex items-center"
           >
             <HomeIcon className="h-5 w-5 mr-1" /> Home
           </Link>
+
           <Link
             to="/products"
             className="text-yellow-600 hover:text-yellow-800"
@@ -39,7 +50,9 @@ export default function Navbar() {
           </Link>
         </div>
 
+        
         <div className="flex items-center space-x-4">
+         
           <Link
             to="/wishlist"
             className="text-yellow-600 hover:text-yellow-800 relative"
@@ -52,6 +65,7 @@ export default function Navbar() {
             )}
           </Link>
 
+          
           <Link
             to="/cart"
             className="text-yellow-600 hover:text-yellow-800 relative"
@@ -63,15 +77,13 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-
           {user ? (
             <button
-  onClick={handleLogout}
-  className="relative bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B] text-white px-4 py-2 rounded-xl shadow-lg font-semibold text-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
->
-  Logout
-</button>
-
+              onClick={handleLogout}
+              className="bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B] text-white px-4 py-2 rounded-xl shadow-lg font-semibold text-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
+            >
+              Logout
+            </button>
           ) : (
             <Link
               to="/login"

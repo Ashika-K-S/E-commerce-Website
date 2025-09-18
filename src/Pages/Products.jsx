@@ -8,7 +8,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
 
 const ProductsPage = () => {
-  const { wishlist, Cart, addToWishlist, addToCart } = useStore();
+  const { wishlist, Cart, toggleWishlist, addToCart } = useStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("All");
@@ -76,7 +76,7 @@ const ProductsPage = () => {
               key={product.id}
               className="relative bg-white p-4 rounded-lg shadow flex flex-col">
               <button
-  onClick={() => addToWishlist(product)}
+  onClick={() => toggleWishlist(product)}
   className={`absolute top-2 right-2 p-2 rounded-full ${
     wishlist.find((item) => item.id === product.id)
       ? "bg-red-100 text-red-500"

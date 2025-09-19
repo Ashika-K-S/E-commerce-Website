@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../Context/StoreContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { AuthProvider, useAuth } from "../Context/AuthContext";
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useStore();
+    const{user}=useAuth()
+  
   const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
@@ -21,8 +24,12 @@ export default function CartPage() {
    
     navigate("/checkout", { state: { items: cart } });
   }
+
 };
 
+  if(!user){
+    navigate("/register")
+}
 
   return (
     <>

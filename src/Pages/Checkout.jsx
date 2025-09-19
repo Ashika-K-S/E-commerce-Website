@@ -5,7 +5,7 @@ export default function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
   const items = location.state?.items || [];
-
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",

@@ -6,7 +6,7 @@ import { useAuth } from "../Context/AuthContext";
 function Login() {
   const [data, setData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const { login, user } = useAuth(); // ✅ fixed
+  const { login, user } = useAuth();
 
   const stateChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -24,13 +24,9 @@ function Login() {
 
       if (result.data.length > 0) {
         const userData = result.data[0];
-
-        // ✅ Update AuthContext (this also saves in localStorage)
         login(userData);
 
         alert("Login successful");
-
-        // Redirect based on role
         if (userData.role === "admin") {
           navigate("/admin");
         } else {
@@ -46,7 +42,6 @@ function Login() {
   };
 
   if (user) {
-    // Optional: if already logged in, show a logout button
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-xl shadow-md text-center">
@@ -56,7 +51,7 @@ function Login() {
           <p className="mb-4">Hello, {user.name}!</p>
           <button
             onClick={() => {
-              login(null); // logout
+              login(null);
               navigate("/login");
             }}
             className="bg-red-500 text-white px-6 py-2 rounded-xl font-semibold hover:bg-red-600 transition-colors"

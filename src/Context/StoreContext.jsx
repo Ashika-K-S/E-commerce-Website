@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
+import { Navigate } from "react-router-dom";
 
 const StoreContext = createContext();
 
@@ -8,7 +9,7 @@ export const StoreProvider = ({ children }) => {
   const { user } = useAuth(); 
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,6 +34,7 @@ export const StoreProvider = ({ children }) => {
   const addToCart = async (product) => {
     if (!user) {
       alert("Login First");
+      Navigate("/register")
       return;
     }
 
@@ -143,7 +145,7 @@ export const StoreProvider = ({ children }) => {
       console.log("Error removing from wishlist:", err);
     }
   };
-
+  
   return (
     <StoreContext.Provider
       value={{

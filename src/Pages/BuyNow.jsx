@@ -14,8 +14,7 @@ function ProductCard({ product }) {
       <p className="text-yellow-600 font-bold">₹{product.price}</p>
       <button
         onClick={handleBuyNow}
-        className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 mt-2 rounded-md w-full"
-      >
+        className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 mt-2 rounded-md w-full">
         Buy Now
       </button>
     </div>

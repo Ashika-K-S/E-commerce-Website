@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../Context/AuthContext";
+import { toast } from "react-toastify";
 
 function Login() {
   const [data, setData] = useState({ email: "", password: "" });
@@ -23,17 +24,21 @@ function Login() {
       console.log(result.data)
 
       if (result.data.length > 0) {
+        if(result.data[0].status=="active"){
         const userData = result.data[0];
         login(userData);
 
-        alert("Login successful");
+       toast.success("Login successful");
         if (userData.role === "admin") {
           navigate("/admin");
         } else {
           navigate("/");
         }
+      }else{
+        toast.error("Admin Blocked You")
+      }
       } else {
-        alert("Invalid Email or Password");
+        toast.error("Invalid Email or Password");
       }
     } catch (error) {
       console.log("Login error", error);

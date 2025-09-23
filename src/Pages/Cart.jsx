@@ -1,13 +1,11 @@
-import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../Context/StoreContext";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { AuthProvider, useAuth } from "../Context/AuthContext";
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useStore();
-    const{user}=useAuth()
+
   
   const navigate = useNavigate();
 
@@ -26,10 +24,6 @@ export default function CartPage() {
   }
 
 };
-
-  if(!user){
-    navigate("/register")
-}
 
   return (
     <>

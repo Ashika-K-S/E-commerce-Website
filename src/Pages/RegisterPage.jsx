@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Register() {
   const [data, setData] = useState({
@@ -10,6 +11,7 @@ function Register() {
     role: "user",
     cart: [],
     wishlist: [],
+    status:[]
   });
 
   const navigate = useNavigate();
@@ -22,11 +24,11 @@ function Register() {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/users", data);
-      alert("Registered successfully! You can now login.");
+      toast.success("Registered successfully! You can now login.");
       navigate("/login");
       } catch (error) {
       console.error("Error registering user:", error);
-      alert("Something went wrong. Try again.");
+      toast.error("Something went wrong. Try again.");
     }
   };
 
@@ -72,15 +74,14 @@ function Register() {
             onChange={stateChange}
             className="w-full p-4 rounded-xl border border-gray-300 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-md transition duration-300"
           />
-          <select
+         <input
+            type="hidden"
             name="role"
+            placeholder="user"
             value={data.role}
             onChange={stateChange}
-            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-black focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-md transition duration-300"
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+            className="w-full p-4 rounded-xl border border-gray-300 bg-white text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 shadow-md transition duration-300"
+          />
 
           
           <button className="relative w-full bg-gradient-to-r from-[#D4AF37] via-[#C4972C] to-[#B8860B] text-white font-semibold py-4 rounded-xl shadow-lg text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-xl">

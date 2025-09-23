@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import { Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const StoreContext = createContext();
 
@@ -33,9 +34,11 @@ export const StoreProvider = ({ children }) => {
   
   const addToCart = async (product) => {
     if (!user) {
-      alert("Login First");
+       toast.success("Login first");
       Navigate("/register")
       return;
+    }else{
+      toast("Added to Cart")
     }
 
     try {
@@ -103,7 +106,7 @@ export const StoreProvider = ({ children }) => {
 
   const toggleWishlist = async (product) => {
     if (!user) {
-      alert("Login First");
+      toast.success("Login first");
       return;
     }
 
@@ -123,7 +126,7 @@ export const StoreProvider = ({ children }) => {
         wishlist: updatedWishlist,
       });
       setWishlist(updatedWishlist);
-      alert(exists ? "Removed from Wishlist" : "Added to Wishlist");
+    toast(exists ? "Removed from Wishlist" : "Added to Wishlist");
     } catch (err) {
       console.log("Error updating wishlist:", err);
     }

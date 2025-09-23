@@ -3,6 +3,7 @@ import { useStore } from "../Context/StoreContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import {toast} from "react-toastify"
 
 const Wishlist = () => {
   const { wishlist, addToCart, removeFromWishlist } = useStore();
@@ -10,7 +11,7 @@ const Wishlist = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   const handleBuyNow = (product) => {
     if (!user) {
-      alert("Login first");
+      toast.success("Login first");
       return;
     }
     navigate("/checkout", { state: { items: [{ ...product, quantity: 1 }] } });

@@ -11,7 +11,7 @@ function Register() {
     role: "user",
     cart: [],
     wishlist: [],
-    status:[]
+    status:"active"
   });
 
   const navigate = useNavigate();

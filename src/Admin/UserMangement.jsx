@@ -27,7 +27,7 @@ const UserManagement = () => {
       });
   };
 
-  // Add new user (only regular user)
+ 
   const handleAddUser = (e) => {
     e.preventDefault();
     axios.post("http://localhost:5000/users", newUser)
@@ -46,14 +46,14 @@ const UserManagement = () => {
     <div className="p-6 bg-gray-100 min-h-screen relative">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">User Management</h2>
 
-      {/* Toast */}
+     
       {toast && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg transition">
           {toast}
         </div>
       )}
 
-      {/* Add User Form */}
+     
       <form onSubmit={handleAddUser} className="mb-6 bg-white p-4 rounded shadow flex flex-col gap-4">
         <h3 className="text-lg font-semibold text-gray-700">Add New User</h3>
         <div className="flex flex-col md:flex-row gap-4">
@@ -81,8 +81,6 @@ const UserManagement = () => {
           Add User
         </button>
       </form>
-
-      {/* Users Table */}
       <table className="min-w-full text-left bg-white shadow rounded">
         <thead className="bg-purple-50">
           <tr>
